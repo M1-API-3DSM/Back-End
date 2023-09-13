@@ -1,11 +1,13 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { TasksModule } from './Tasks/tasks.module';
+import { ProjetoModule } from './projeto/projeto.module';
+import { DatabaseModule } from './database/database.module';
+import { ItemPaiModule } from './itemPai/itemPai.module';
+import { ItemFilhoModule } from './itemFilho/itemFilho.module';
 
 @Module({
-  imports: [TasksModule, MongooseModule.forRoot('mongodb://localhost:27017/')],
+  imports: [ProjetoModule, DatabaseModule, ItemPaiModule, ItemFilhoModule],
   controllers: [AppController],
   providers: [AppService],
 })
