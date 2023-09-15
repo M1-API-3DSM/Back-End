@@ -1,15 +1,24 @@
-// projeto.entity.ts
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import { ItemPai } from '../itemPai/itemPai.entity';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
+import { Usuario } from '../usuario/usuario.entity';
+import { Item } from '../item/item.entity';
 
 @Entity()
 export class Projeto {
   @PrimaryGeneratedColumn()
-  ID_Projeto: number;
+  id_projeto: number;
 
-  @Column({ type: 'varchar', length: 255 })
-  nome: string;
+  @Column()
+  nome_projeto: string;
 
-  @OneToMany(() => ItemPai, itemPai => itemPai.projeto)
-  itemPais: ItemPai[];
+  @Column()
+  material_total: number;
+
+  @Column()
+  hora_homem_total: number;
+
+  @ManyToOne(() => Usuario, (usuario) => usuario.projetos)
+  usuario: Usuario;
+
+  @OneToMany(() => Item, (item) => item.projeto)
+  itens: Item[];
 }
