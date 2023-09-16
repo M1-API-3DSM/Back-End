@@ -96,12 +96,22 @@ export class CreateTables1694751937247 implements MigrationInterface {
                     generationStrategy: "increment",
                 },
                 {
+                    name: "item",
+                    type: "varchar",
+                },
+                {
+                    name: "nome_item",
+                    type: "varchar",
+                },
+                {
                     name: "material",
                     type: "int",
+                    isNullable: true,
                 },
                 {
                     name: "hora_homem",
                     type: "int",
+                    isNullable: true,
                 },
                 {
                     name: "projeto_id",

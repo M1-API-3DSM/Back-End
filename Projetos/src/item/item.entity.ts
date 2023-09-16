@@ -9,16 +9,23 @@ export class Item {
   id_item: number;
 
   @Column()
+  item:string;
+  
+  @Column()
+  nome_item:string;
+
+  @Column({ nullable: true })
   material: number;
 
-  @Column()
+  @Column({ nullable: true })
   hora_homem: number;
 
   @ManyToOne(() => Projeto, (projeto) => projeto.itens)
+  @JoinColumn({ name: 'projeto_Id' })
   projeto: Projeto;
 
   @ManyToOne(() => Item, (item) => item, { nullable: true })
-  @JoinColumn({ name: 'idItem' }) // Chave estrangeira para o item pai
+  @JoinColumn({ name: 'itemPai_id' }) // Chave estrangeira para o item pai
   itemPai: Item;
 
   @OneToMany(() => Tarefas, (tarefa) => tarefa.item)

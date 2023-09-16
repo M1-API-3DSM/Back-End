@@ -6,7 +6,7 @@ import { Projeto } from './projeto.entity';
 export class ProjetoService {
   constructor(
     @Inject('Projeto_REPOSITORY')
-    private projetoRepository: Repository<Projeto>,
+    private projetoRepository: Repository<any>,
   ) {}
 
   async findAll(): Promise<Projeto[]> {
@@ -31,7 +31,7 @@ export class ProjetoService {
     await this.projetoRepository.delete(id);
   }
 
-  async criarProjetoComJSON(jsonData: any): Promise<Projeto | undefined> {
+  async criarProjeto(jsonData: any): Promise<Projeto | undefined> {
     if (!Array.isArray(jsonData) || jsonData.length === 0) {
       throw new Error('O JSON deve ser um array não vazio.');
     }
@@ -43,7 +43,6 @@ export class ProjetoService {
       throw new Error('Nome do projeto não encontrado no JSON.');
     }
 
-    // Cria um novo projeto com o nome extraído
     const projeto = await this.projetoRepository.create({ nome_projeto: nomeProjeto });
     await this.projetoRepository.save(projeto);
 
