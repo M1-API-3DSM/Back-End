@@ -69,14 +69,17 @@ export class CreateTables1694751937247 implements MigrationInterface {
                 {
                     name: "material_total",
                     type: "int",
+                    isNullable: true,
                 },
                 {
                     name: "hora_homem_total",
                     type: "int",
+                    isNullable: true,
                 },
                 {
                     name: "usuario_id",
                     type: "int",
+                    isNullable: true,
                 },
             ],
         }));

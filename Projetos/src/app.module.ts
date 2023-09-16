@@ -9,6 +9,7 @@ import { ItemModule } from './item/item.module';
 import { CargoModule } from './cargo/cargo.module';
 import { AvancoTarefasModule } from './avancoTarefas/avancoTarefas.module';
 import { MongoModule } from './database/mongodb.module';
+import { CriarProjetoController } from './criarProjeto/criarProjeto.controller';
 
 
 @Module({
