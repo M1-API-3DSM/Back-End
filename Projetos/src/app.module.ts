@@ -8,11 +8,10 @@ import { TarefasModule } from './tarefas/tarefas.module';
 import { ItemModule } from './item/item.module';
 import { CargoModule } from './cargo/cargo.module';
 import { AvancoTarefasModule } from './avancoTarefas/avancoTarefas.module';
-import { MongoModule } from './database/mongodb.module';
 
 
 @Module({
-  imports: [ProjetoModule, DatabaseModule,UsuarioModule,TarefasModule,ItemModule,CargoModule,AvancoTarefasModule,MongoModule],
+  imports: [ProjetoModule, DatabaseModule,UsuarioModule,TarefasModule,ItemModule,CargoModule,AvancoTarefasModule],
   controllers: [AppController],
   providers: [AppService],
 })
