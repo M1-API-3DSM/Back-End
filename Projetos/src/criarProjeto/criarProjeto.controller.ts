@@ -9,51 +9,71 @@ export class CriarProjetoController {
   constructor(
     private readonly projetoService: ProjetoService,
     private readonly itemService: ItemService,
-    ) {}
+  ) { }
 
-    @Post()
-async create(@Body() jsonData: any): Promise<Projeto | undefined> {
-  try {
-    const projeto = await this.projetoService.criarProjeto(jsonData);
-    let parentItem: Item | null = null;
+  @Post()
+  async create(@Body() jsonData: any): Promise<Projeto | undefined> {
+    try {
+      const projeto = await this.projetoService.criarProjeto(jsonData);
 
-    for (let i = 0; i < jsonData.length; i++) {
-      const row = jsonData[i];
-      const keys = Object.keys(row);
+      // Salvar todos os itens no banco de dados
+      const savedItens: Item[] = [];
+      let parentItem: Item | null = null;
 
-      if (keys.length > 0) {
-        const key = keys[0];
-        let match;
+      for (let i = 0; i < jsonData.length; i++) {
+        const row = jsonData[i];
+        const keys = Object.keys(row);
 
-        if (i === 0) {
-          match = row[key].match(/(\d+)\.\s+(.+)/);
-        } else {
-          match = row[key].match(/(\d+(?:\.\d+)*)\s+(.+)/);
-        }
+        if (keys.length > 0) {
+          const key = keys[0];
+          let match;
 
-        if (match) {
-          const numero = match[1];
-          const nome = match[2];
+          if (i === 0) {
+            match = row[key].match(/(\d+)\.\s+(.+)/);
+          } else {
+            match = row[key].match(/(\d+(?:\.\d+)*)\s+(.+)/);
+          }
 
-          const newItemData = {
-            item: numero,
-            nome_item: nome,
-            projeto: projeto,
-            itemPai: parentItem, // Associando o item pai corretamente
-          };
+          if (match) {
+            const numero = match[1];
+            const nome = match[2];
 
-          const newItem = await this.itemService.create(newItemData);
+            const newItemData = {
+              item: numero,
+              nome_item: nome,
+              projeto: projeto,
+              itemPai: parentItem,
+            };
 
-          // Atualizando o item pai para o novo item criado
-          parentItem = newItem;
+            const newItem = await this.itemService.create(newItemData);
+            savedItens.push(newItem);
+
+            // Atualizando o item pai para o novo item criado
+            parentItem = newItem;
+          }
         }
       }
+
+      // Organização dos itens em uma estrutura hierárquica
+      savedItens.sort((a, b) => a.item.localeCompare(b.item)); // Ordena por numeração
+
+      for (let i = 0; i < savedItens.length; i++) {
+        const currentItem = savedItens[i];
+
+        if (i > 0) {
+          // Encontrar o item pai
+          const parent = savedItens.slice(0, i).reverse().find((item) => currentItem.item.startsWith(item.item));
+
+          if (parent) {
+            currentItem.itemPai = parent;
+            await this.itemService.update(currentItem.id_item, { itemPai: parent });
+          }
+        }
+      }
+
+      return projeto;
+    } catch (error) {
+      throw new Error('Erro ao criar o projeto a partir do JSON: ' + error.message);
     }
-
-    return projeto;
-  } catch (error) {
-    throw new Error('Erro ao criar o projeto a partir do JSON: ' + error.message);
   }
-}   
 }
-
