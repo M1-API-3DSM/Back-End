@@ -38,7 +38,7 @@ export class ProjetoService {
 
     // Extrai o nome do projeto da primeira linha do JSON
     const nomeProjeto = Object.keys(jsonData[0])[0];
-
+    
     if (!nomeProjeto) {
       throw new Error('Nome do projeto não encontrado no JSON.');
     }
