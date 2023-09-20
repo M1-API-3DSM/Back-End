@@ -1,17 +1,17 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, NotFoundException } from '@nestjs/common';
 import { ProjetoService } from '../projeto/projeto.service';
 import { Projeto } from '../projeto/projeto.entity';
 import { ItemService } from 'src/item/item.service';
 import { Item } from 'src/item/item.entity';
 
-@Controller('criarProjeto/')
+@Controller('projetoItem/')
 export class CriarProjetoController {
   constructor(
     private readonly projetoService: ProjetoService,
     private readonly itemService: ItemService,
   ) { }
 
-  @Post()
+  @Post('criar')
   async create(@Body() jsonData: any): Promise<Projeto | undefined> {
     try {
       const projeto = await this.projetoService.criarProjeto(jsonData);
@@ -75,5 +75,28 @@ export class CriarProjetoController {
     } catch (error) {
       throw new Error('Erro ao criar o projeto a partir do JSON: ' + error.message);
     }
+  }
+
+  @Get()
+  async findAllWithItens(): Promise<any[]> {
+    const projetos = await this.projetoService.findAllWithItens();
+    return projetos.map((projeto) => ({
+      projeto,
+    }));
+  }
+
+  @Get(':id')
+  async findProjectWithItens(@Param('id') id: number): Promise<any> {
+    const projeto = await this.projetoService.findOne(id);
+
+    if (!projeto) {
+      throw new NotFoundException(`Projeto com ID ${id} não encontrado`);
+    }
+
+    projeto.itens = await this.itemService.findItensByProjeto(id);
+
+    return {
+      projeto,
+    };
   }
 }

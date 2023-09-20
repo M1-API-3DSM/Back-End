@@ -47,5 +47,9 @@ export class ProjetoService {
     await this.projetoRepository.save(projeto);
 
     return projeto;
-  }    
+  } 
+  
+  async findAllWithItens(): Promise<Projeto[]> {
+    return this.projetoRepository.find({ relations: ['itens'] });
+  }
 }
