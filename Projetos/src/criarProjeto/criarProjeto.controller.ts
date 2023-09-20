@@ -1,4 +1,11 @@
-import { Controller, Post, Body, Get, Param, NotFoundException } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Param,
+  NotFoundException,
+} from '@nestjs/common';
 import { ProjetoService } from '../projeto/projeto.service';
 import { Projeto } from '../projeto/projeto.entity';
 import { ItemService } from 'src/item/item.service';
@@ -9,7 +16,7 @@ export class CriarProjetoController {
   constructor(
     private readonly projetoService: ProjetoService,
     private readonly itemService: ItemService,
-  ) { }
+  ) {}
 
   @Post('criar')
   async create(@Body() jsonData: any): Promise<Projeto | undefined> {
@@ -62,18 +69,25 @@ export class CriarProjetoController {
 
         if (i > 0) {
           // Encontrar o item pai
-          const parent = savedItens.slice(0, i).reverse().find((item) => currentItem.item.startsWith(item.item));
+          const parent = savedItens
+            .slice(0, i)
+            .reverse()
+            .find((item) => currentItem.item.startsWith(item.item));
 
           if (parent) {
             currentItem.itemPai = parent;
-            await this.itemService.update(currentItem.id_item, { itemPai: parent });
+            await this.itemService.update(currentItem.id_item, {
+              itemPai: parent,
+            });
           }
         }
       }
 
       return projeto;
     } catch (error) {
-      throw new Error('Erro ao criar o projeto a partir do JSON: ' + error.message);
+      throw new Error(
+        'Erro ao criar o projeto a partir do JSON: ' + error.message,
+      );
     }
   }
 

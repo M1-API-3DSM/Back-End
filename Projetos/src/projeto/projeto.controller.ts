@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, ParseIntPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Param,
+  Body,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { ProjetoService } from './projeto.service';
 import { Projeto } from './projeto.entity';
 
@@ -17,12 +26,17 @@ export class ProjetoController {
   }
 
   @Get(':id')
-  async findOne(@Param('id', ParseIntPipe) id: number): Promise<Projeto | undefined> {
+  async findOne(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<Projeto | undefined> {
     return this.projetoService.findOne(id);
   }
 
   @Put(':id')
-  async update(@Param('id', ParseIntPipe) id: number, @Body() projetoData: Partial<Projeto>): Promise<Projeto | undefined> {
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() projetoData: Partial<Projeto>,
+  ): Promise<Projeto | undefined> {
     return this.projetoService.update(id, projetoData);
   }
 

@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  OneToMany,
+  JoinColumn,
+} from 'typeorm';
 import { Projeto } from '../projeto/projeto.entity';
 import { Tarefas } from 'src/tarefas/tarefas.entity';
 import { AvancoTarefas } from 'src/avancoTarefas/avancoTarefas.entity';
@@ -9,10 +16,10 @@ export class Item {
   id_item: number;
 
   @Column()
-  item:string;
-  
+  item: string;
+
   @Column()
-  nome_item:string;
+  nome_item: string;
 
   @Column({ nullable: true })
   material: number;
@@ -34,4 +41,3 @@ export class Item {
   @OneToMany(() => AvancoTarefas, (avancoTarefa) => avancoTarefa.item)
   avancoTarefas: AvancoTarefas[];
 }
-

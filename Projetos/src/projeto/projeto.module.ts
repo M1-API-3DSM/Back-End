@@ -10,9 +10,11 @@ import { ProjetoController } from './projeto.controller';
 @Module({
   imports: [DatabaseModule],
   providers: [
-    ...projetoProviders,...itemProviders,
-    ProjetoService,ItemService
+    ...projetoProviders,
+    ...itemProviders,
+    ProjetoService,
+    ItemService,
   ],
-  controllers: [CriarProjetoController,ProjetoController]
+  controllers: [CriarProjetoController, ProjetoController],
 })
 export class ProjetoModule {}

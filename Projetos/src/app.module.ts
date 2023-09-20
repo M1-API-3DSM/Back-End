@@ -9,9 +9,16 @@ import { ItemModule } from './item/item.module';
 import { CargoModule } from './cargo/cargo.module';
 import { AvancoTarefasModule } from './avancoTarefas/avancoTarefas.module';
 
-
 @Module({
-  imports: [ProjetoModule, DatabaseModule,UsuarioModule,TarefasModule,ItemModule,CargoModule,AvancoTarefasModule],
+  imports: [
+    ProjetoModule,
+    DatabaseModule,
+    UsuarioModule,
+    TarefasModule,
+    ItemModule,
+    CargoModule,
+    AvancoTarefasModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

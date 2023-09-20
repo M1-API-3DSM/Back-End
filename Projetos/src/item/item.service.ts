@@ -7,7 +7,7 @@ export class ItemService {
   constructor(
     @Inject('Item_REPOSITORY')
     private itemRepository: Repository<Item>,
-  ) { }
+  ) {}
 
   async findAll(): Promise<Item[]> {
     return this.itemRepository.find();
@@ -41,9 +41,7 @@ export class ItemService {
     await this.itemRepository.remove(item);
   }
 
-
   async findItensByProjeto(id: number): Promise<Item[]> {
     return this.itemRepository.find({ where: { projeto: { id_projeto: id } } });
   }
-
 }

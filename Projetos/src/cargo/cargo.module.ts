@@ -5,9 +5,6 @@ import { CargoService } from './cargo.service';
 
 @Module({
   imports: [DatabaseModule],
-  providers: [
-    ...cargoProviders,
-    CargoService,
-  ],
+  providers: [...cargoProviders, CargoService],
 })
 export class CargoModule {}

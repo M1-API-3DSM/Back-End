@@ -5,9 +5,6 @@ import { TarefasService } from './tarefas.service';
 
 @Module({
   imports: [DatabaseModule],
-  providers: [
-    ...tarefasProviders,
-    TarefasService,
-  ],
+  providers: [...tarefasProviders, TarefasService],
 })
 export class TarefasModule {}
