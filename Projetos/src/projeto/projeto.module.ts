@@ -5,6 +5,7 @@ import { ProjetoService } from './projeto.service';
 import { CriarProjetoController } from 'src/criarProjeto/criarProjeto.controller';
 import { ItemService } from 'src/item/item.service';
 import { itemProviders } from 'src/item/item.providers';
+import { ProjetoController } from './projeto.controller';
 
 @Module({
   imports: [DatabaseModule],
@@ -12,6 +13,6 @@ import { itemProviders } from 'src/item/item.providers';
     ...projetoProviders,...itemProviders,
     ProjetoService,ItemService
   ],
-  controllers: [CriarProjetoController]
+  controllers: [CriarProjetoController,ProjetoController]
 })
 export class ProjetoModule {}

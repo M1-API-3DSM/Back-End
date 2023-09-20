@@ -4,7 +4,7 @@ import { Projeto } from '../projeto/projeto.entity';
 import { ItemService } from 'src/item/item.service';
 import { Item } from 'src/item/item.entity';
 
-@Controller('projetos/criar')
+@Controller('criarProjeto/')
 export class CriarProjetoController {
   constructor(
     private readonly projetoService: ProjetoService,
