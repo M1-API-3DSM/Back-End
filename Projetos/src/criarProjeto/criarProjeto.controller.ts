@@ -26,10 +26,10 @@ export class CriarProjetoController {
         for (const key of keys) {
           const cellValue = Object.values(row[key])[0];
           console.log(cellValue)
-  
+
           if (typeof cellValue === 'string') {
             let match;
-  
+
             if (i === 0) {
               match = cellValue.match(/(\d+)\.\s+(.+)/);
             } else {
@@ -53,7 +53,7 @@ export class CriarProjetoController {
 
               // Atualize o item pai para o novo item criado
               parentItem = newItem;
-              i = i+1
+              i = i + 1
             }
           }
         }
@@ -85,9 +85,43 @@ export class CriarProjetoController {
   @Get()
   async findAllWithItens(): Promise<any[]> {
     const projetos = await this.projetoService.findAllWithItens();
-    return projetos.map((projeto) => ({
-      projeto,
-    }));
+
+    // Mapeia os projetos com a hierarquia de itens
+    const projetosComItens = projetos.map((projeto) => {
+      projeto.itens = this.buildItemHierarchy(projeto.itens);
+      return projeto;
+    });
+
+    return projetosComItens;
+  }
+
+  private buildItemHierarchy(itens: Item[]): any[] {
+    const itemMap = new Map<string, any>();
+
+    itens.forEach(item => {
+      itemMap.set(item.item, {
+        item: item.item,
+        nome_item: item.nome_item,
+        itens_filhos: [] // Inicialmente, configura uma matriz vazia para os itens filhos
+      });
+    });
+
+    // Constrói a hierarquia dos itens
+    itemMap.forEach((item, key) => {
+      const parentKey = key.split('.').slice(0, -1).join('.');
+      if (parentKey !== "") {
+        // Este item tem um item pai
+        if (itemMap.has(parentKey)) {
+          // Adiciona como um item filho do item pai
+          itemMap.get(parentKey).itens_filhos.push(item);
+        }
+      }
+    });
+
+    // Filtra os itens de nível superior (aqueles sem pai)
+    const itensTopo = Array.from(itemMap.values()).filter(item => item.item.split('.').length === 1);
+
+    return itensTopo;
   }
 
   @Get(':id')
@@ -100,8 +134,39 @@ export class CriarProjetoController {
 
     projeto.itens = await this.itemService.findItensByProjeto(id);
 
+    // Mapeia o nome do projeto
+    const nomeProjeto = projeto.nome_projeto;
+
+    // Cria um objeto que mapeia os itens 
+    const itemMap = new Map<string, any>();
+
+    projeto.itens.forEach(item => {
+      itemMap.set(item.item, {
+        item: item.item,
+        nome_item: item.nome_item,
+        itens_filhos: [] // Inicialmente, configura uma matriz vazia para os itens filhos
+      });
+    });
+
+    // Constrói a hierarquia dos itens
+    itemMap.forEach((item, key) => {
+      const parentKey = key.split('.').slice(0, -1).join('.');
+      if (parentKey !== "") {
+        // Este item tem um item pai
+        if (itemMap.has(parentKey)) {
+          // Adiciona como um item filho do item pai
+          itemMap.get(parentKey).itens_filhos.push(item);
+        }
+      }
+    });
+
+    // Filtra os itens de nível superior (aqueles sem pai)
+    const itensTopo = Array.from(itemMap.values()).filter(item => item.item.split('.').length === 1);
+
+    // Retorna o resultado 
     return {
-      projeto,
+      nome_projeto: nomeProjeto,
+      itens: itensTopo,
     };
   }
 }
