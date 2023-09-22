@@ -21,64 +21,64 @@ export class CriarProjetoController {
   @Post('criar')
   async create(@Body() jsonData: any): Promise<Projeto | undefined> {
     try {
-      const projeto = await this.projetoService.criarProjeto(jsonData);
-
+      const projeto = await this.projetoService.criarProjeto(jsonData.parsedData[0]);
       // Salvar todos os itens no banco de dados
       const savedItens: Item[] = [];
       let parentItem: Item | null = null;
 
-      for (let i = 0; i < jsonData.length; i++) {
-        const row = jsonData[i];
+      for (let i = 0; i < jsonData.parsedData.length; i++) {
+        const row = jsonData.parsedData[i];
         const keys = Object.keys(row);
 
-        if (keys.length > 0) {
-          const key = keys[0];
-          let match;
+        for (const key of keys) {
+          const cellValue = Object.values(row[key])[0];
+          console.log(cellValue)
 
-          if (i === 0) {
-            match = row[key].match(/(\d+)\.\s+(.+)/);
-          } else {
-            match = row[key].match(/(\d+(?:\.\d+)*)\s+(.+)/);
-          }
+          if (typeof cellValue === 'string') {
+            let match;
 
-          if (match) {
-            const numero = match[1];
-            const nome = match[2];
+            if (i === 0) {
+              match = cellValue.match(/(\d+)\.\s+(.+)/);
+            } else {
+              match = cellValue.match(/(\d+(?:\.\d+)*)\s+(.+)/);
+            }
 
-            const newItemData = {
-              item: numero,
-              nome_item: nome,
-              projeto: projeto,
-              itemPai: parentItem,
-            };
+            if (match) {
+              const numero = match[1].trim();
+              const nome = match[2].trim();
 
-            const newItem = await this.itemService.create(newItemData);
-            savedItens.push(newItem);
+              // Crie um novo item com base nos dados extraídos
+              const newItemData = {
+                item: numero,
+                nome_item: nome,
+                projeto: projeto,
+                itemPai: parentItem,
+              };
 
-            // Atualizando o item pai para o novo item criado
-            parentItem = newItem;
+              const newItem = await this.itemService.create(newItemData);
+              savedItens.push(newItem);
+
+              // Atualize o item pai para o novo item criado
+              parentItem = newItem;
+              i = i + 1
+            }
           }
         }
-      }
 
-      // Organização dos itens em uma estrutura hierárquica
-      savedItens.sort((a, b) => a.item.localeCompare(b.item)); // Ordena por numeração
+        // Organização dos itens em uma estrutura hierárquica
+        savedItens.sort((a, b) => a.item.localeCompare(b.item)); // Ordena por numeração
 
-      for (let i = 0; i < savedItens.length; i++) {
-        const currentItem = savedItens[i];
+        for (let i = 0; i < savedItens.length; i++) {
+          const currentItem = savedItens[i];
 
-        if (i > 0) {
-          // Encontrar o item pai
-          const parent = savedItens
-            .slice(0, i)
-            .reverse()
-            .find((item) => currentItem.item.startsWith(item.item));
+          if (i > 0) {
+            // Encontrar o item pai
+            const parent = savedItens.slice(0, i).reverse().find((item) => currentItem.item.startsWith(item.item));
 
-          if (parent) {
-            currentItem.itemPai = parent;
-            await this.itemService.update(currentItem.id_item, {
-              itemPai: parent,
-            });
+            if (parent) {
+              currentItem.itemPai = parent;
+              await this.itemService.update(currentItem.id_item, { itemPai: parent });
+            }
           }
         }
       }
@@ -94,9 +94,43 @@ export class CriarProjetoController {
   @Get()
   async findAllWithItens(): Promise<any[]> {
     const projetos = await this.projetoService.findAllWithItens();
-    return projetos.map((projeto) => ({
-      projeto,
-    }));
+
+    // Mapeia os projetos com a hierarquia de itens
+    const projetosComItens = projetos.map((projeto) => {
+      projeto.itens = this.buildItemHierarchy(projeto.itens);
+      return projeto;
+    });
+
+    return projetosComItens;
+  }
+
+  private buildItemHierarchy(itens: Item[]): any[] {
+    const itemMap = new Map<string, any>();
+
+    itens.forEach(item => {
+      itemMap.set(item.item, {
+        item: item.item,
+        nome_item: item.nome_item,
+        itens_filhos: [] // Inicialmente, configura uma matriz vazia para os itens filhos
+      });
+    });
+
+    // Constrói a hierarquia dos itens
+    itemMap.forEach((item, key) => {
+      const parentKey = key.split('.').slice(0, -1).join('.');
+      if (parentKey !== "") {
+        // Este item tem um item pai
+        if (itemMap.has(parentKey)) {
+          // Adiciona como um item filho do item pai
+          itemMap.get(parentKey).itens_filhos.push(item);
+        }
+      }
+    });
+
+    // Filtra os itens de nível superior (aqueles sem pai)
+    const itensTopo = Array.from(itemMap.values()).filter(item => item.item.split('.').length === 1);
+
+    return itensTopo;
   }
 
   @Get(':id')
@@ -109,8 +143,39 @@ export class CriarProjetoController {
 
     projeto.itens = await this.itemService.findItensByProjeto(id);
 
+    // Mapeia o nome do projeto
+    const nomeProjeto = projeto.nome_projeto;
+
+    // Cria um objeto que mapeia os itens 
+    const itemMap = new Map<string, any>();
+
+    projeto.itens.forEach(item => {
+      itemMap.set(item.item, {
+        item: item.item,
+        nome_item: item.nome_item,
+        itens_filhos: [] // Inicialmente, configura uma matriz vazia para os itens filhos
+      });
+    });
+
+    // Constrói a hierarquia dos itens
+    itemMap.forEach((item, key) => {
+      const parentKey = key.split('.').slice(0, -1).join('.');
+      if (parentKey !== "") {
+        // Este item tem um item pai
+        if (itemMap.has(parentKey)) {
+          // Adiciona como um item filho do item pai
+          itemMap.get(parentKey).itens_filhos.push(item);
+        }
+      }
+    });
+
+    // Filtra os itens de nível superior (aqueles sem pai)
+    const itensTopo = Array.from(itemMap.values()).filter(item => item.item.split('.').length === 1);
+
+    // Retorna o resultado 
     return {
-      projeto,
+      nome_projeto: nomeProjeto,
+      itens: itensTopo,
     };
   }
 }
