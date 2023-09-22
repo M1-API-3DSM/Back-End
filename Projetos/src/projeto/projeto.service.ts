@@ -21,8 +21,11 @@ export class ProjetoService {
   async findOne(id: number): Promise<Projeto | undefined> {
     return this.projetoRepository.findOne({ where: { id_projeto: id } });
   }
-  
-  async update(id: number, projetoData: Partial<Projeto>): Promise<Projeto | undefined> {
+
+  async update(
+    id: number,
+    projetoData: Partial<Projeto>,
+  ): Promise<Projeto | undefined> {
     await this.projetoRepository.update(id, projetoData);
     return this.findOne(id);
   }
@@ -43,12 +46,14 @@ export class ProjetoService {
       throw new Error('Nome do projeto não encontrado no JSON.');
     }
 
-    const projeto = await this.projetoRepository.create({ nome_projeto: nomeProjeto });
+    const projeto = await this.projetoRepository.create({
+      nome_projeto: nomeProjeto,
+    });
     await this.projetoRepository.save(projeto);
 
     return projeto;
-  } 
-  
+  }
+
   async findAllWithItens(): Promise<Projeto[]> {
     return this.projetoRepository.find({ relations: ['itens'] });
   }

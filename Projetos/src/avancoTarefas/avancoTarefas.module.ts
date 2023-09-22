@@ -5,9 +5,6 @@ import { avancoTarefasProviders } from './avancoTarefas.providers';
 
 @Module({
   imports: [DatabaseModule],
-  providers: [
-    ...avancoTarefasProviders,
-    AvancoTarefasService,
-  ],
+  providers: [...avancoTarefasProviders, AvancoTarefasService],
 })
 export class AvancoTarefasModule {}

@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, ParseIntPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Param,
+  Body,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { ItemService } from './item.service';
 import { Item } from './item.entity';
 
@@ -22,7 +31,10 @@ export class ItemController {
   }
 
   @Put(':id')
-  async update(@Param('id', ParseIntPipe) id: number, @Body() itemData: Partial<Item>): Promise<Item> {
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() itemData: Partial<Item>,
+  ): Promise<Item> {
     return this.itemService.update(id, itemData);
   }
 
