@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { Cargo } from '../cargo/cargo.entity';
 import { Projeto } from '../projeto/projeto.entity';
+import { Item } from 'src/item/item.entity';
 
 @Entity()
 export class Usuario {
@@ -21,6 +22,12 @@ export class Usuario {
 
   @Column()
   nome: string;
+
+  @Column( {nullable: true})
+  nome_equipe: string;
+
+  @OneToMany(() => Item, (item) => item.usuario)
+  usuario: Usuario[];
 
   @ManyToOne(() => Cargo, (cargo) => cargo.usuarios)
   cargo: Cargo;

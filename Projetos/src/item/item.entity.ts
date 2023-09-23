@@ -9,6 +9,8 @@ import {
 import { Projeto } from '../projeto/projeto.entity';
 import { Tarefas } from 'src/tarefas/tarefas.entity';
 import { AvancoTarefas } from 'src/avancoTarefas/avancoTarefas.entity';
+import internal from 'stream';
+import { Usuario } from 'src/usuario/usuario.entity';
 
 @Entity({ name: 'item' }) // Defina o nome da tabela em maiúsculas
 export class Item {
@@ -26,6 +28,13 @@ export class Item {
 
   @Column({ nullable: true })
   hora_homem: number;
+
+  @Column({ default: false })
+  sem_filho: boolean;
+
+  @ManyToOne(() => Usuario, (usuario) => usuario.usuario)
+  @JoinColumn({ name: 'engenheiro_id' })
+  usuario: Usuario;
 
   @ManyToOne(() => Projeto, (projeto) => projeto.itens)
   @JoinColumn({ name: 'projeto_Id' })

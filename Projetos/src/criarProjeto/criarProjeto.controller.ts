@@ -16,7 +16,7 @@ export class CriarProjetoController {
   constructor(
     private readonly projetoService: ProjetoService,
     private readonly itemService: ItemService,
-  ) {}
+  ) { }
 
   @Post('criar')
   async create(@Body() jsonData: any): Promise<Projeto | undefined> {
@@ -83,6 +83,15 @@ export class CriarProjetoController {
         }
       }
 
+      const itensSemFilho = await this.itemService.findSemFilho(projeto.id_projeto)
+      
+      for (let itemSemFilho of itensSemFilho) {
+        itemSemFilho.sem_filho = true;
+        await this.itemService.update(itemSemFilho.id_item, itemSemFilho);
+      }
+      
+      
+      
       return projeto;
     } catch (error) {
       throw new Error(

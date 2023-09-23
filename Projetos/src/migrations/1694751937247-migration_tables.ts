@@ -48,6 +48,10 @@ export class CreateTables1694751937247 implements MigrationInterface {
             type: 'varchar',
           },
           {
+            name: 'nome_equipe',
+            type: 'varchar',
+          },
+          {
             name: 'nome',
             type: 'varchar',
           },
@@ -107,6 +111,11 @@ export class CreateTables1694751937247 implements MigrationInterface {
             generationStrategy: 'increment',
           },
           {
+            name: 'sem_filho',
+            type: 'boolean',
+            default: false,
+          },
+          {
             name: 'item',
             type: 'varchar',
           },
@@ -133,6 +142,11 @@ export class CreateTables1694751937247 implements MigrationInterface {
             type: 'int',
             isNullable: true,
           },
+          {
+            name: 'engenheiro_id',
+            type: 'int',
+            isNullable: true,
+          }
         ],
       }),
     );
@@ -220,6 +234,16 @@ export class CreateTables1694751937247 implements MigrationInterface {
         columnNames: ['projeto_id'],
         referencedColumnNames: ['id_projeto'],
         referencedTableName: 'projeto',
+        onDelete: 'CASCADE',
+      }),
+    );
+
+    await queryRunner.createForeignKey(
+      'item',
+      new TableForeignKey({
+        columnNames: ['engenheiro_id'],
+        referencedColumnNames: ['id_usuario'],
+        referencedTableName: 'usuario',
         onDelete: 'CASCADE',
       }),
     );
