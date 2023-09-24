@@ -44,4 +44,11 @@ export class ItemService {
   async findItensByProjeto(id: number): Promise<Item[]> {
     return this.itemRepository.find({ where: { projeto: { id_projeto: id } } });
   }
+
+  async findSemFilho(id: number): Promise<Item[]>{
+    const query = this.itemRepository.createQueryBuilder('item').where(`item.id_item NOT IN (SELECT DISTINCT itemPai_id FROM item WHERE itemPai_id IS NOT NULL) AND projeto_id = ${id}`);
+    const itemsSemFilho = await query.getMany();
+    return itemsSemFilho
+  }
+
 }
