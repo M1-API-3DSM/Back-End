@@ -1,0 +1,30 @@
+version: '3'
+services:
+  redis:
+    image: redis:latest
+    network_mode: "host"
+
+  mysql:
+    image: mysql:latest
+    network_mode: "host"
+    environment:
+      - MYSQL_ROOT_PASSWORD=1234
+      - MYSQL_DATABASE=api
+ 
+  servico_users:
+    build:
+      context: ./Usuarios/.
+      dockerfile: Dockerfile
+    network_mode: "host"
+    depends_on:
+      - redis
+      - mysql
+  
+  servico_projetos:
+    build:
+      context: ./Projetos/.
+      dockerfile: Dockerfile
+    network_mode: "host"
+    depends_on:
+      - redis
+      - mysql 
