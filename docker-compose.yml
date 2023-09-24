@@ -13,7 +13,7 @@ services:
  
   servico_users:
     build:
-      context: ./Usuarios/.
+      context: ./Usuarios
       dockerfile: Dockerfile
     network_mode: "host"
     depends_on:
@@ -22,7 +22,7 @@ services:
   
   servico_projetos:
     build:
-      context: ./Projetos/.
+      context: ./Projetos
       dockerfile: Dockerfile
     network_mode: "host"
     depends_on:

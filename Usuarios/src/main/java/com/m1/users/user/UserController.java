@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 
-import java.sql.SQLIntegrityConstraintViolationException;
 
 @RestController
 @RequestMapping("/user")
@@ -40,7 +39,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/")
+    @PostMapping()
     public ResponseEntity<?> createUser(@RequestBody NewUserRequest new_user) {
         try {
             User created_user = userService.createUser(new_user);

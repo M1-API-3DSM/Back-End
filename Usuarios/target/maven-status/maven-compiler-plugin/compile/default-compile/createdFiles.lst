@@ -1,0 +1,11 @@
+com/m1/users/user/NewUserRequest.class
+com/m1/users/enums/Role.class
+com/m1/users/user/LoginResponse.class
+com/m1/users/user/UserService.class
+com/m1/users/user/UserRepository.class
+com/m1/users/user/LoginRequest.class
+com/m1/users/configuration/CorsConfig.class
+com/m1/users/configuration/AppConfig.class
+com/m1/users/user/User.class
+com/m1/users/user/UserController.class
+com/m1/users/UsersApplication.class

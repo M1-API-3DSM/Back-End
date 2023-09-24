@@ -1,0 +1,12 @@
+/home/oabreu/faculdade/Back-End/Usuarios/src/main/java/com/m1/users/user/UserService.java
+/home/oabreu/faculdade/Back-End/Usuarios/src/main/java/com/m1/users/configuration/RedisConfig.java
+/home/oabreu/faculdade/Back-End/Usuarios/src/main/java/com/m1/users/user/LoginResponse.java
+/home/oabreu/faculdade/Back-End/Usuarios/src/main/java/com/m1/users/user/UserRepository.java
+/home/oabreu/faculdade/Back-End/Usuarios/src/main/java/com/m1/users/user/LoginRequest.java
+/home/oabreu/faculdade/Back-End/Usuarios/src/main/java/com/m1/users/enums/Role.java
+/home/oabreu/faculdade/Back-End/Usuarios/src/main/java/com/m1/users/configuration/AppConfig.java
+/home/oabreu/faculdade/Back-End/Usuarios/src/main/java/com/m1/users/user/NewUserRequest.java
+/home/oabreu/faculdade/Back-End/Usuarios/src/main/java/com/m1/users/UsersApplication.java
+/home/oabreu/faculdade/Back-End/Usuarios/src/main/java/com/m1/users/user/UserController.java
+/home/oabreu/faculdade/Back-End/Usuarios/src/main/java/com/m1/users/configuration/CorsConfig.java
+/home/oabreu/faculdade/Back-End/Usuarios/src/main/java/com/m1/users/user/User.java
