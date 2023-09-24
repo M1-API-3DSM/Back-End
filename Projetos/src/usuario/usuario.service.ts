@@ -13,6 +13,13 @@ export class UsuarioService {
     return this.usuarioRepository.find();
   }
 
+  async findByNomeEquipe(nome: any, equipe: any): Promise<Usuario | undefined> {
+
+    const query = this.usuarioRepository.createQueryBuilder('usuario').where(`nome = '${nome}' AND nome_equipe = '${equipe}' `);
+    const usuario = await query.getOne();
+    return usuario
+  }
+
   async create(usuarioData: Partial<Usuario>): Promise<Usuario> {
     const projeto = this.usuarioRepository.create(usuarioData);
     return this.usuarioRepository.save(projeto);

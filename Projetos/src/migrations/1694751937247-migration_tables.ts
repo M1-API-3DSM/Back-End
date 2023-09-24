@@ -58,6 +58,7 @@ export class CreateTables1694751937247 implements MigrationInterface {
           {
             name: 'cargo_id',
             type: 'int',
+            isNullable: true,
           },
         ],
       }),

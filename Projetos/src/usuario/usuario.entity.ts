@@ -4,6 +4,7 @@ import {
   Column,
   ManyToOne,
   OneToMany,
+  JoinColumn,
 } from 'typeorm';
 import { Cargo } from '../cargo/cargo.entity';
 import { Projeto } from '../projeto/projeto.entity';
@@ -29,7 +30,9 @@ export class Usuario {
   @OneToMany(() => Item, (item) => item.usuario)
   usuario: Usuario[];
 
+
   @ManyToOne(() => Cargo, (cargo) => cargo.usuarios)
+  @JoinColumn({ name: 'cargo_id' })
   cargo: Cargo;
 
   @OneToMany(() => Projeto, (projeto) => projeto.usuario)

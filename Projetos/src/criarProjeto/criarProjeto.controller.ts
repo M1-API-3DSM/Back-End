@@ -10,12 +10,15 @@ import { ProjetoService } from '../projeto/projeto.service';
 import { Projeto } from '../projeto/projeto.entity';
 import { ItemService } from 'src/item/item.service';
 import { Item } from 'src/item/item.entity';
+import { Usuario } from 'src/usuario/usuario.entity';
+import { UsuarioService } from 'src/usuario/usuario.service';
 
 @Controller('projetoItem/')
 export class CriarProjetoController {
   constructor(
     private readonly projetoService: ProjetoService,
     private readonly itemService: ItemService,
+    private readonly usuarioService: UsuarioService,
   ) { }
 
   @Post('criar')
@@ -46,13 +49,35 @@ export class CriarProjetoController {
             if (match) {
               const numero = match[1].trim();
               const nome = match[2].trim();
+              let usuario: Usuario
+              if (Object.values(row[key])[1] && Object.values(row[key])[2]) {
+                const equipe = Object.values(row[key])[1] !== undefined ? String(Object.values(row[key])[1]) : '';
+                const nomeUsu = Object.values(row[key])[2] !== undefined ? String(Object.values(row[key])[2]) : '';
 
+                const usuarioXLSX = await this.usuarioService.findByNomeEquipe(nome, equipe)
+                console.log(usuarioXLSX)
+                if (usuarioXLSX) {
+                  usuario = usuarioXLSX;
+                  // await this.itemService.update()
+                } else {
+                  let ususarioCriar = {
+                    login: nomeUsu,
+                    senha: nomeUsu,
+                    nome: nomeUsu,
+                    nome_equipe: equipe,
+                    cargo_id: 1,
+                  }
+                  usuario = await this.usuarioService.create(ususarioCriar)
+                }
+              } 
               // Crie um novo item com base nos dados extraídos
+
               const newItemData = {
                 item: numero,
                 nome_item: nome,
                 projeto: projeto,
                 itemPai: parentItem,
+                usuario: usuario,
               };
 
               const newItem = await this.itemService.create(newItemData);
@@ -84,14 +109,12 @@ export class CriarProjetoController {
       }
 
       const itensSemFilho = await this.itemService.findSemFilho(projeto.id_projeto)
-      
+
       for (let itemSemFilho of itensSemFilho) {
         itemSemFilho.sem_filho = true;
         await this.itemService.update(itemSemFilho.id_item, itemSemFilho);
       }
-      
-      
-      
+
       return projeto;
     } catch (error) {
       throw new Error(
@@ -162,6 +185,7 @@ export class CriarProjetoController {
       itemMap.set(item.item, {
         item: item.item,
         nome_item: item.nome_item,
+        sem_filho: item.sem_filho,
         itens_filhos: [] // Inicialmente, configura uma matriz vazia para os itens filhos
       });
     });
